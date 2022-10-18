@@ -16,7 +16,6 @@ from ldm.util import instantiate_from_config
 from ldm.models.diffusion.ddim import DDIMSampler
 from ldm.models.diffusion.plms import PLMSSampler
 
-
 def chunk(it, size):
     it = iter(it)
     return iter(lambda: tuple(islice(it, size)), ())
@@ -160,7 +159,7 @@ def main():
         type=str,
         default="models/ldm/stable-diffusion-v1/model.ckpt",
         help="path to checkpoint of model",
-    )    
+    )
     parser.add_argument(
         "--seed",
         type=int,
