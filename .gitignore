@@ -8,3 +8,13 @@ __pycache__
 logs
 
 huggingface.token
+
+.ipynb_checkpoints/
+Stable-Diffusion-Regularization-Images-person_ddim/
+latent_diffusion.egg-info/
+outputs/
+src/
+trained_models/
+training_images/
+regularization_images/
+scripts/.ipynb_checkpoints/
