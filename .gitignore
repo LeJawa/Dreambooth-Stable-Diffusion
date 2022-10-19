@@ -18,3 +18,5 @@ trained_models/
 training_images/
 regularization_images/
 scripts/.ipynb_checkpoints/
+
+image_locations.csv
