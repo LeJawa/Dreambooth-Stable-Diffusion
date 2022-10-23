@@ -20,3 +20,6 @@ regularization_images/
 scripts/.ipynb_checkpoints/
 
 image_locations.csv
+
+credentials.json
+token.json
