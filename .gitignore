@@ -23,3 +23,5 @@ image_locations.csv
 
 credentials.json
 token.json
+
+*.ckpt
