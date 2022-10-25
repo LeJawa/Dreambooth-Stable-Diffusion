@@ -2,7 +2,6 @@ from __future__ import print_function
 
 import io
 
-import google.auth
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaIoBaseDownload
@@ -12,16 +11,14 @@ import os
 SCOPES = ['https://www.googleapis.com/auth/drive']
 
 
-def download_file(FOLDER_ID):
-    """Downloads a file
+def download_files_in_folder(folder_id, keywords=[]):
+    """Downloads the files in the specified folder, as long as their names contain one of the keywords.
     Args:
-        real_file_id: ID of the file to download
-    Returns : IO object with location.
-
-    Load pre-authorized user credentials from the environment.
-    TODO(developer) - See https://developers.google.com/identity
-    for guides on implementing OAuth2 for the application.
+        folder_id: ID of the folder to look for files.
+        keywords: list of key strings. The name of the files downloaded needs to contain at least one of the keys.
+                  If empty, all files are downloaded.
     """
+
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
@@ -40,7 +37,7 @@ def download_file(FOLDER_ID):
         while True:
             # Call the Drive v3 API
             results = service.files().list(
-                    q=f"'{FOLDER_ID}' in parents",
+                    q=f"'{folder_id}' in parents",
                     pageSize=10, fields="nextPageToken, files(id, name)",
                     pageToken=page_token).execute()
             items = results.get('files', [])
@@ -49,18 +46,30 @@ def download_file(FOLDER_ID):
                 print('No files found.')
             else:
                 for item in items:
+                    foundKey = False
+                    for key in keywords:
+                        if key in item['name']:
+                            foundKey = True
+                            break
+                        
+                    if keywords != [] and not foundKey:
+                        continue
+                    
                     print(u'{0} ({1})'.format(item['name'], item['id']))
 
 
                     file_id = item['id']
-                    request = service.files().get_media(fileId=file_id)
-
-                    with open(item['name'], 'wb') as fh:
-                        downloader = MediaIoBaseDownload(fh, request)
-                        done = False
-                        while done is False:
-                            status, done = downloader.next_chunk()
-                            print("Download %d%%." % int(status.progress() * 100))
+                    request = service.files().get_media(fileId=file_id)                            
+                    
+                    file = io.BytesIO()
+                    downloader = MediaIoBaseDownload(file, request)
+                    done = False
+                    while done is False:
+                        status, done = downloader.next_chunk()
+                        print(F'Download {int(status.progress() * 100)}%.')
+                    
+                    with open(item['name'], "wb") as f:
+                        f.write(file.getvalue()) 
 
             page_token = results.get('nextPageToken', None)
             if page_token is None:
@@ -72,4 +81,5 @@ def download_file(FOLDER_ID):
 
 
 if __name__ == '__main__':
-    print(download_file('1QKzZFTLCc_OJbOLIwKsnsO5zxGRyCc6v'))
+    keywords = []
+    download_files_in_folder('1QKzZFTLCc_OJbOLIwKsnsO5zxGRyCc6v', keywords=keywords)
