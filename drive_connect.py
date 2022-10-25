@@ -1,3 +1,7 @@
+# First run this script to generate token.json
+# Then copy the token to the server
+
+
 from __future__ import print_function
 
 import os.path
@@ -13,9 +17,6 @@ SCOPES = ['https://www.googleapis.com/auth/drive']
 
 
 def main():
-    """Shows basic usage of the Drive v3 API.
-    Prints the names and ids of the first 10 files the user has access to.
-    """
     creds = None
     # The file token.json stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
